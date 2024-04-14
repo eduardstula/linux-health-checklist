@@ -3,7 +3,7 @@
 # Copyright (c) 2024 eduardstula
 # Author: Eduard Stula
 # License: MIT
-# https://github.com/eduardstula/healt-checklist
+# https://github.com/eduardstula/linux-healt-checklist
 
 RD=$(echo "\033[01;31m")
 YW=$(echo "\033[33m")
