@@ -203,8 +203,7 @@ start_routines() {
         #offer to disable root login
         read -p "Do you want to disable root login? (y/n): " -r
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            #disable root login and uncomment line if needed
-            sed -i 's/#PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
+            sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
             systemctl restart sshd
         fi
     fi
@@ -219,8 +218,7 @@ start_routines() {
         #offer to disable password authentication
         read -p "Do you want to disable password authentication? (y/n): " -r
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            #disable password authentication and uncomment line if needed
-            sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
+            sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
             systemctl restart sshd
         fi
     fi
