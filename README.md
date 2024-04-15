@@ -1,3 +1,10 @@
-How to use?
+# Linux Healt Checklist
 
-sudo bash -c "$(wget -qLO - https://raw.githubusercontent.com/eduardstula/linux-healt-checklist/master/healt-checklist.sh)"
+
+
+
+## How to use?
+
+
+
+bash -c "$(wget -qLO - https://raw.githubusercontent.com/eduardstula/linux-healt-checklist/master/healt-checklist.sh)"

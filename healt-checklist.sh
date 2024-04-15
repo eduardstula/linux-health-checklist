@@ -28,6 +28,11 @@ header() {
                                                                            "
 }
 
+section_header() {
+  local msg="$1"
+  echo -e "\n${YW}${msg}${CL}"
+}
+
 msg_info() {
   local msg="$1"
   echo -ne " ${HOLD} ${YW}${msg}..."
@@ -48,6 +53,8 @@ start_routines() {
 
     header
 
+    section_header "System informations"
+
     #check if the script is running as root / sudo
     if [ "$EUID" -ne 0 ]; then
         msg_error "Please run as root"
@@ -65,7 +72,7 @@ start_routines() {
 
     #show timezone
     msg_info "Checking timezone"
-    TIMEZONE=$(timedatectl | awk '/Time zone/{print $3}')
+    TIMEZONE=$(timedatectl | awk '/Time zone/{print $3}' || true)
     msg_ok "Timezone: $TIMEZONE"
 
     #show CPU platform
@@ -81,17 +88,65 @@ start_routines() {
     #show total memory
     msg_info "Checking total memory"
     TOTAL_MEMORY=$(free -m | awk '/^Mem:/{print $2}')
-    msg_ok "Memory: $TOTAL_MEMORY MB"
+    msg_ok "Total memory: $TOTAL_MEMORY MB"
+
+    #show free memory
+    msg_info "Checking free memory"
+    FREE_MEMORY=$(free -m | awk '/^Mem:/{print $4}')
+    msg_ok "Free memory:  $FREE_MEMORY MB"
 
     #show total disk space
     msg_info "Checking total disk space"
-    TOTAL_DISK=$(df -h --total | awk '/total/{print $2}')
-    msg_ok "Disk: $TOTAL_DISK"
+    TOTAL_DISK=$(df -h --total / | awk '/total/{print $2}')
+    msg_ok "Total disk size: $TOTAL_DISK"
 
     #show free disk space
     msg_info "Checking free disk space"
-    FREE_DISK=$(df -h --total | awk '/total/{print $4}')
-    msg_ok "Free: $FREE_DISK"
+    FREE_DISK=$(df -h --total / | awk '/total/{print $4}')
+    msg_ok "Free disk size:  $FREE_DISK"
+
+    
+    section_header "Network informations"
+
+    #show ip address
+    msg_info "Checking IP address"
+    IP_ADDRESS=$(hostname -I)
+    msg_ok "IP address: $IP_ADDRESS"
+
+    #check internet connection
+    msg_info "Checking internet connection"
+    if ping -q -c 1 -W 1 google.com > /dev/null; then
+        msg_ok "Internet connection: OK"
+    else
+        msg_error "Internet connection: FAIL"
+    fi
+
+    #show DNS servers
+    msg_info "Checking DNS servers"
+    DNS_SERVERS=$(cat /etc/resolv.conf | awk '/nameserver/{print $2}')
+    msg_ok "DNS servers: $DNS_SERVERS"
+
+    section_header "Package management"
+
+    #show if the system is up to date
+    read -p "Do you want check system updates ? (y/n): " -r
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        msg_info "Checking system updates"
+        apt update
+        UPDATES=$(apt list --upgradable 2>/dev/null | wc -l)
+        if [ "$UPDATES" -gt 1 ]; then
+            msg_error "System updates available"
+            #offer to update the system
+            read -p "Do you want to update the system? (y/n): " -r
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                apt upgrade -y
+            fi
+        else
+            msg_ok "System up to date"
+        fi
+    fi
+
+    section_header "Security"
 
     #if distro is ubuntu, check if "pro" is installed
     msg_info "Checking Ubuntu Pro"
@@ -125,7 +180,7 @@ start_routines() {
     #check if UFW is installed and enabled and show status
     msg_info "Checking UFW"
     if [ -f /etc/ufw/ufw.conf ]; then
-        UFW_STATUS=$(ufw status | awk '/Status:/{print $2}')
+        UFW_STATUS=$(ufw status | awk '/Status:/{print $2}' || true)
         if [ "$UFW_STATUS" == "active" ]; then
             msg_ok "UFW enabled"
         else
@@ -167,25 +222,6 @@ start_routines() {
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             apt install -y fail2ban
         fi
-    fi
-
-    #check if Zabbix Agent is installed and enabled and show status
-    msg_info "Checking Zabbix Agent"
-    if [ -f /etc/zabbix/zabbix_agentd.conf ]; then
-        ZABBIX_AGENT_STATUS=$(systemctl is-enabled zabbix-agent)
-        if [ "$ZABBIX_AGENT_STATUS" == "enabled" ]; then
-            msg_ok "Zabbix Agent enabled"
-        else
-            msg_error "Zabbix Agent not enabled"
-            #offer to enable Zabbix Agent
-            read -p "Do you want to enable Zabbix Agent? (y/n): " -r
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
-                systemctl enable zabbix-agent
-                systemctl start zabbix-agent
-            fi
-        fi
-    else
-        msg_error "Zabbix Agent not installed"
     fi
 
     #show SSH port
@@ -268,6 +304,27 @@ start_routines() {
             sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords no/g' /etc/ssh/sshd_config
             systemctl restart sshd
         fi
+    fi
+    
+    section_header "Monitoring"    
+
+    #check if Zabbix Agent is installed and enabled and show status
+    msg_info "Checking Zabbix Agent"
+    if [ -f /etc/zabbix/zabbix_agentd.conf ]; then
+        ZABBIX_AGENT_STATUS=$(systemctl is-enabled zabbix-agent)
+        if [ "$ZABBIX_AGENT_STATUS" == "enabled" ]; then
+            msg_ok "Zabbix Agent enabled"
+        else
+            msg_error "Zabbix Agent not enabled"
+            #offer to enable Zabbix Agent
+            read -p "Do you want to enable Zabbix Agent? (y/n): " -r
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                systemctl enable zabbix-agent
+                systemctl start zabbix-agent
+            fi
+        fi
+    else
+        msg_error "Zabbix Agent not installed"
     fi
 
 }
