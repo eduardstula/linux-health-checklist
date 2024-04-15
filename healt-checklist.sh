@@ -346,6 +346,11 @@ start_routines() {
     UPTIME=$(uptime -p)
     msg_ok "Uptime: $UPTIME"
 
+    #load average
+    msg_info "Checking load average"
+    LOAD_AVERAGE=$(uptime | awk -F'average:' '{print $2}' | awk '{print $1, $2, $3}')
+    msg_ok "Load average: $LOAD_AVERAGE"
+
     #check if Zabbix Agent is installed and enabled and show status
     msg_info "Checking Zabbix Agent"
     if [ -f /etc/zabbix/zabbix_agentd.conf ]; then

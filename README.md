@@ -57,6 +57,7 @@ Table of features that the application checks:
 | Total disk space | Shows the total disk space of the server |
 | Free disk space | Shows the free disk space of the server |
 
+
 ### Network informations
 
 | Feature | Description |
@@ -93,6 +94,7 @@ Table of features that the application checks:
 | Feature | Description |
 | --- | --- |
 | Uptime | Shows the uptime of the server |
+| Load average | Shows the load average of the server |
 | Zabbix agent | Shows if the Zabbix agent is installed and running |
 
 ## Story
