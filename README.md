@@ -1,4 +1,4 @@
-# Linux Healt Checklist
+# Linux Health Checklist
 
 Application that checks the health of a debian based linux servers.
 
@@ -24,7 +24,7 @@ The best way how to keep your server healthy is to check it regularly. This appl
 The simplest way to use this application is to run the following command in the terminal of the server you want to check:
 
 ```bash
-bash -c "$(wget -qLO - https://raw.githubusercontent.com/eduardstula/linux-healt-checklist/master/healt-checklist.sh)"
+bash -c "$(wget -qLO - https://raw.githubusercontent.com/eduardstula/linux-health-checklist/master/health-checklist.sh)"
 ```
 
 Why use this command? This command will download the latest version of the application from the repository and run it.
@@ -34,9 +34,9 @@ Why use this command? This command will download the latest version of the appli
 If you want to install the application manually, you can download the script from the repository and run it.
 
 ```bash
-wget https://raw.githubusercontent.com/eduardstula/linux-healt-checklist/master/healt-checklist.sh
-chmod +x healt-checklist.sh
-./healt-checklist.sh
+wget https://raw.githubusercontent.com/eduardstula/linux-health-checklist/master/health-checklist.sh
+chmod +x health-checklist.sh
+./health-checklist.sh
 ```
 
 ## Features
