@@ -108,6 +108,11 @@ start_routines() {
     
     section_header "Network informations"
 
+    #show hostname
+    msg_info "Checking hostname"
+    HOSTNAME=$(hostname)
+    msg_ok "Hostname: $HOSTNAME"
+
     #show ip address
     msg_info "Checking IP address"
     IP_ADDRESS=$(hostname -I)
@@ -307,6 +312,11 @@ start_routines() {
     fi
     
     section_header "Monitoring"    
+
+    # uptime
+    msg_info "Checking uptime"
+    UPTIME=$(uptime -p)
+    msg_ok "Uptime: $UPTIME"
 
     #check if Zabbix Agent is installed and enabled and show status
     msg_info "Checking Zabbix Agent"
