@@ -249,21 +249,6 @@ start_routines() {
         fi
     fi
 
-    #show if password authentication is disabled in sshd_config and line is uncommented
-    msg_info "Checking password authentication"
-    PASSWORD_AUTH=$(grep PasswordAuthentication /etc/ssh/sshd_config | grep -v "#" | awk '{print $2}') || true
-    if [ "$PASSWORD_AUTH" == "no" ]; then
-        msg_ok "Password authentication disabled"
-    else
-        msg_error "Password authentication enabled"
-        #offer to disable password authentication
-        read -p "Do you want to disable password authentication? (y/n): " -r
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
-            systemctl restart sshd
-        fi
-    fi
-
     #show if PermitEmptyPasswords is disabled in sshd_config and line is uncommented
     msg_info "Checking empty passwords"
     EMPTY_PASSWORDS=$(grep PermitEmptyPasswords /etc/ssh/sshd_config | grep -v "#" | awk '{print $2}') || true
@@ -290,6 +275,21 @@ start_routines() {
     SSH_KEY=$(ls -la ~/.ssh/authorized_keys | awk '{print $3}') || true
     if [ "$SSH_KEY" == "root" ]; then
         msg_ok "SSH key copied"
+        
+        #show if password authentication is disabled in sshd_config and line is uncommented
+        msg_info "Checking password authentication"
+        PASSWORD_AUTH=$(grep PasswordAuthentication /etc/ssh/sshd_config | grep -v "#" | awk '{print $2}') || true
+        if [ "$PASSWORD_AUTH" == "no" ]; then
+            msg_ok "Password authentication disabled"
+        else
+            msg_error "Password authentication enabled"
+            #offer to disable password authentication
+            read -p "Do you want to disable password authentication? (y/n): " -r
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
+                systemctl restart sshd
+            fi
+        fi
     else
         msg_error "SSH key not copied"
     fi
