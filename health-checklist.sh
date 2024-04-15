@@ -53,6 +53,7 @@ msg_error() {
 #enabled flags
 #-h, --help
 #-d, --dry-run
+DRY_RUN=false
 while [ "$#" -gt 0 ]; do
     case "$1" in
         -h|--help)
