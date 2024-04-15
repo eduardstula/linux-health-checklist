@@ -117,7 +117,7 @@ If you want to contribute to this project, you can create a pull request with yo
 - Raspbian 12
 - Ubuntu 22.04
 
-## 📒 Disclaimer
+## 😶 Disclaimer
 
 This application is not intended to be used in production environments. It is a simple script that shows and checks some basic configurations of a linux server.
 
