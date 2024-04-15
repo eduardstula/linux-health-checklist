@@ -27,15 +27,28 @@ You can lose access to your server if you don't know what you are doing. This ap
 
 ## 🏃 How to use?
 
-The simplest way to use this application is to run the following command in the terminal of the server you want to check:
+The simplest way to use this application is to run the following command in the terminal of the server you want to check.
+
+### Check only
+
+If you want to run the application in dry-run mode, you can use the following command. The application only show current status of the server. It doesn't ask you for any improvements and doesn't change any configurations.
+
+```bash
+bash -c "$(wget -qLO - https://raw.githubusercontent.com/eduardstula/linux-health-checklist/master/health-checklist.sh)" --dry-run
+```
+
+### Check and improve
+
+This command run application in standard mode. The application ask you for some improvements of the server. You can choose which improvements you want to apply.
 
 ```bash
 bash -c "$(wget -qLO - https://raw.githubusercontent.com/eduardstula/linux-health-checklist/master/health-checklist.sh)"
 ```
 
-Why use this command? This command will download the latest version of the application from the repository and run it.
+### Why use this online command?
+This command will download the latest version of the application from the repository and run it. You don't need to download the script manually and you can be sure that you are using the latest version of the application.
 
-### Manual installation
+### Install the application on the server
 
 If you want to install the application manually, you can download the script from the repository and run it.
 
@@ -44,6 +57,11 @@ wget https://raw.githubusercontent.com/eduardstula/linux-health-checklist/master
 chmod +x health-checklist.sh
 ./health-checklist.sh
 ```
+
+## 🚩 Application flags
+
+- `--dry-run` or `-d` - Run the application in dry-run mode. The application only show current status of the server. It doesn't ask you for any improvements and doesn't change any configurations.
+- `--help` or `-h` - Show help message.
 
 ## 📋 Features
 

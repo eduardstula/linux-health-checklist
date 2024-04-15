@@ -49,6 +49,30 @@ msg_error() {
   echo -e "${BFR} ${CROSS} ${RD}${msg}${CL}"
 }
 
+#flags with default values and help
+#enabled flags
+#-h, --help
+#-d, --dry-run
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        -h|--help)
+            echo "Usage: $0 [OPTION]"
+            echo "Options:"
+            echo "  -h, --help     Show this help message and exit"
+            echo "  -d, --dry-run  Run the script without making any changes"
+            exit 0
+            ;;
+        -d|--dry-run)
+            DRY_RUN=true
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+    shift
+done
+
 start_routines() {
 
     header
@@ -136,41 +160,46 @@ start_routines() {
     DNS_SERVERS=$(cat /etc/resolv.conf | awk '/nameserver/{print $2}')
     msg_ok "DNS servers: $DNS_SERVERS"
 
+    
+    if [ -z "$DRY_RUN" ]; then
+
     section_header "Package management"
 
     #show if the system is up to date
-    read -p "Do you want check system updates ? (y/n): " -r
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        msg_info "Checking system updates"
-        apt update 2>/dev/null || true
-        UPDATES=$(apt list --upgradable 2>/dev/null | wc -l)
-        if [ "$UPDATES" -gt 1 ]; then
-            msg_error "System updates available"
-            #offer to update the system
-            read -p "Do you want to update the system? (y/n): " -r
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
-                apt upgrade -y
+    #run only if DRY_RUN is not enabled
+        read -p "Do you want check system updates ? (y/n): " -r
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            msg_info "Checking system updates"
+            apt update 2>/dev/null || true
+            UPDATES=$(apt list --upgradable 2>/dev/null | wc -l)
+            if [ "$UPDATES" -gt 1 ]; then
+                msg_error "System updates available"
+                #offer to update the system
+                read -p "Do you want to update the system? (y/n): " -r
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    apt upgrade -y
+                fi
+            else
+                msg_ok "System up to date"
             fi
-        else
-            msg_ok "System up to date"
         fi
-    fi
 
-    #show if the system has security updates
-    read -p "Do you want check security updates ? (y/n): " -r
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        msg_info "Checking security updates"
-        apt update 2>/dev/null || true
-        SECURITY_UPDATES=$(apt list --upgradable 2>/dev/null | grep -i security | wc -l || true)
-        if [ "$SECURITY_UPDATES" -gt 1 ]; then
-            msg_error "Security updates available"
-            #offer to install security updates
-            read -p "Do you want to install security updates? (y/n): " -r
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
-                apt upgrade -y
+        #show if the system has security updates
+        read -p "Do you want check security updates ? (y/n): " -r
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            msg_info "Checking security updates"
+            apt update 2>/dev/null || true
+            SECURITY_UPDATES=$(apt list --upgradable 2>/dev/null | grep -i security | wc -l || true)
+            if [ "$SECURITY_UPDATES" -gt 1 ]; then
+                msg_error "Security updates available"
+                #offer to install security updates
+                read -p "Do you want to install security updates? (y/n): " -r
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    apt upgrade -y
+                fi
+            else
+                msg_ok "No security updates available"
             fi
-        else
-            msg_ok "No security updates available"
         fi
     fi
 
@@ -183,10 +212,12 @@ start_routines() {
             msg_ok "Pro installed"
         else
             msg_error "Pro not installed"
-            #offer to install Ubuntu Pro
-            read -p "Do you want to install Ubuntu Pro? (y/n): " -r
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
-                apt install -y ubuntu-advantage-tools
+            if [ -z "$DRY_RUN" ]; then
+                #offer to install Ubuntu Pro
+                read -p "Do you want to install Ubuntu Pro? (y/n): " -r
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    apt install -y ubuntu-advantage-tools
+                fi
             fi
         fi
     fi
@@ -197,11 +228,13 @@ start_routines() {
         msg_ok "Unattended Upgrades enabled"
     else
         msg_error "Unattended Upgrades not enabled"
-        #offer to enable Unattended Upgrades
-        read -p "Do you want to enable Unattended Upgrades? (y/n): " -r
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            apt install -y unattended-upgrades
-            dpkg-reconfigure -plow unattended-upgrades
+        if [ -z "$DRY_RUN" ]; then
+            #offer to enable Unattended Upgrades
+            read -p "Do you want to enable Unattended Upgrades? (y/n): " -r
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                apt install -y unattended-upgrades
+                dpkg-reconfigure -plow unattended-upgrades
+            fi
         fi
     fi
 
@@ -213,18 +246,22 @@ start_routines() {
             msg_ok "UFW enabled"
         else
             msg_error "UFW not enabled"
-            #offer to enable UFW
-            read -p "Do you want to enable UFW? (y/n): " -r
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
-                ufw enable
+            if [ -z "$DRY_RUN" ]; then
+                #offer to enable UFW
+                read -p "Do you want to enable UFW? (y/n): " -r
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    ufw enable
+                fi
             fi
         fi
     else
         msg_error "UFW not installed"
-        #offer to install UFW
-        read -p "Do you want to install UFW? (y/n): " -r
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            apt install -y ufw
+        if [ -z "$DRY_RUN" ]; then
+            #offer to install UFW
+            read -p "Do you want to install UFW? (y/n): " -r
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                apt install -y ufw
+            fi
         fi
     fi
 
@@ -236,19 +273,23 @@ start_routines() {
             msg_ok "Fail2Ban enabled"
         else
             msg_error "Fail2Ban not enabled"
-            #offer to enable Fail2Ban
-            read -p "Do you want to enable Fail2Ban? (y/n): " -r
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
-                systemctl enable fail2ban
-                systemctl start fail2ban
+            if [ -z "$DRY_RUN" ]; then
+                #offer to enable Fail2Ban
+                read -p "Do you want to enable Fail2Ban? (y/n): " -r
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    systemctl enable fail2ban
+                    systemctl start fail2ban
+                fi
             fi
         fi
     else
         msg_error "Fail2Ban not installed"
-        #offer to install Fail2Ban
-        read -p "Do you want to install Fail2Ban? (y/n): " -r
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            apt install -y fail2ban
+        if [ -z "$DRY_RUN" ]; then
+            #offer to install Fail2Ban
+            read -p "Do you want to install Fail2Ban? (y/n): " -r
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                apt install -y fail2ban
+            fi
         fi
     fi
 
@@ -267,11 +308,13 @@ start_routines() {
             msg_ok "Root login disabled"
         else
             msg_error "Root login enabled"
-            #offer to disable root login
-            read -p "Do you want to disable root login? (y/n): " -r
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
-                sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
-                systemctl restart sshd
+            if [ -z "$DRY_RUN" ]; then
+                #offer to disable root login
+                read -p "Do you want to disable root login? (y/n): " -r
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
+                    systemctl restart sshd
+                fi
             fi
         fi
     fi
@@ -288,12 +331,14 @@ start_routines() {
             msg_ok "Empty passwords disabled"
         else
             msg_error "Empty passwords enabled"
-            #offer to disable empty passwords
-            read -p "Do you want to disable empty passwords? (y/n): " -r
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
-                #disable empty passwords and uncomment line if needed
-                sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords no/g' /etc/ssh/sshd_config
-                systemctl restart sshd
+            if [ -z "$DRY_RUN" ]; then
+                #offer to disable empty passwords
+                read -p "Do you want to disable empty passwords? (y/n): " -r
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    #disable empty passwords and uncomment line if needed
+                    sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords no/g' /etc/ssh/sshd_config
+                    systemctl restart sshd
+                fi
             fi
         fi
     fi
@@ -311,11 +356,13 @@ start_routines() {
             msg_ok "Password authentication disabled"
         else
             msg_error "Password authentication enabled"
-            #offer to disable password authentication
-            read -p "Do you want to disable password authentication? (y/n): " -r
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
-                sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
-                systemctl restart sshd
+            if [ -z "$DRY_RUN" ]; then
+                #offer to disable password authentication
+                read -p "Do you want to disable password authentication? (y/n): " -r
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
+                    systemctl restart sshd
+                fi
             fi
         fi
     else
@@ -330,12 +377,14 @@ start_routines() {
         msg_ok "SSH NOPASSWD disabled"
     else
         msg_error "SSH NOPASSWD enabled"
-        #offer to disable SSH NOPASSWD
-        read -p "Do you want to disable SSH NOPASSWD? (y/n): " -r
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            #disable SSH NOPASSWD and uncomment line if needed
-            sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords no/g' /etc/ssh/sshd_config
-            systemctl restart sshd
+        if [ -z "$DRY_RUN" ]; then
+            #offer to disable SSH NOPASSWD
+            read -p "Do you want to disable SSH NOPASSWD? (y/n): " -r
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                #disable SSH NOPASSWD and uncomment line if needed
+                sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords no/g' /etc/ssh/sshd_config
+                systemctl restart sshd
+            fi
         fi
     fi
     
@@ -359,11 +408,13 @@ start_routines() {
             msg_ok "Zabbix Agent enabled"
         else
             msg_error "Zabbix Agent not enabled"
-            #offer to enable Zabbix Agent
-            read -p "Do you want to enable Zabbix Agent? (y/n): " -r
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
-                systemctl enable zabbix-agent
-                systemctl start zabbix-agent
+            if [ -z "$DRY_RUN" ]; then
+                #offer to enable Zabbix Agent
+                read -p "Do you want to enable Zabbix Agent? (y/n): " -r
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    systemctl enable zabbix-agent
+                    systemctl start zabbix-agent
+                fi
             fi
         fi
     else
