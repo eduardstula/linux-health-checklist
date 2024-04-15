@@ -161,7 +161,7 @@ start_routines() {
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         msg_info "Checking security updates"
         apt update
-        SECURITY_UPDATES=$(apt list --upgradable 2>/dev/null | grep -i security | wc -l)
+        SECURITY_UPDATES=$(apt list --upgradable 2>/dev/null | grep -i security | wc -l || true)
         if [ "$SECURITY_UPDATES" -gt 1 ]; then
             msg_error "Security updates available"
             #offer to install security updates
