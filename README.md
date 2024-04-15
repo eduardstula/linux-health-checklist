@@ -6,6 +6,8 @@ The best way how to keep your server healthy is to check it regularly. This appl
 
 **Have you HomeLab? This application is for you!**
 
+![](assets/screenshot.png)
+
 ## Requirements
 
 ### Required
@@ -90,6 +92,10 @@ Table of features that the application checks:
 | --- | --- |
 | Uptime | Shows the uptime of the server |
 | Zabbix agent | Shows if the Zabbix agent is installed and running |
+
+## Story
+
+I created this application because I wanted to have a simple tool that will help me to check the health of my servers. I have a few servers in my HomeLab and I wanted to have a simple tool that will help me to check the most important configurations of the servers.
 
 ## Contributing
 
