@@ -234,20 +234,25 @@ start_routines() {
     SSH_PORT=$(ss -tlnp | grep sshd | awk '{print $4}' | cut -d: -f2) || true
     msg_ok "SSH Port: $SSH_PORT"
 
-    #show if root login is disabled in sshd_config and line is uncommented
-    msg_info "Checking root login"
-    ROOT_LOGIN=$(grep PermitRootLogin /etc/ssh/sshd_config | grep -v "#" | awk '{print $2}') || true
-    if [ "$ROOT_LOGIN" == "no" ]; then
-        msg_ok "Root login disabled"
-    else
-        msg_error "Root login enabled"
-        #offer to disable root login
-        read -p "Do you want to disable root login? (y/n): " -r
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
-            systemctl restart sshd
+    # am i root?
+    msg_info "Checking root"
+    if [ "$USER" != "root" ]; then
+        #show if root login is disabled in sshd_config and line is uncommented
+        msg_info "Checking root login"
+        ROOT_LOGIN=$(grep PermitRootLogin /etc/ssh/sshd_config | grep -v "#" | awk '{print $2}') || true
+        if [ "$ROOT_LOGIN" == "no" ]; then
+            msg_ok "Root login disabled"
+        else
+            msg_error "Root login enabled"
+            #offer to disable root login
+            read -p "Do you want to disable root login? (y/n): " -r
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
+                systemctl restart sshd
+            fi
         fi
     fi
+
 
     #show if PermitEmptyPasswords is disabled in sshd_config and line is uncommented
     msg_info "Checking empty passwords"
