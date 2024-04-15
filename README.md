@@ -1,4 +1,4 @@
-# Linux Health Checklist
+# Linux Health Checklist ✔️
 
 Application that checks the health of a debian based linux servers.
 
@@ -8,7 +8,7 @@ The best way how to keep your server healthy is to check it regularly. This appl
 
 ![](assets/screenshot.png)
 
-## Requirements
+## 🖥️ Requirements
 
 ### Required
 - Debian based linux server with apt package manager
@@ -19,7 +19,13 @@ The best way how to keep your server healthy is to check it regularly. This appl
 - Wget
 - SSH access to the server
 
-## How to use?
+## ⚠️ Warning
+
+When the application wants to change some configurations of the server, it will ask you for confirmation. But be careful!
+
+You can lose access to your server if you don't know what you are doing. This application can change some configurations of your server etc. SSH port, firewall rules, etc.
+
+## 🏃 How to use?
 
 The simplest way to use this application is to run the following command in the terminal of the server you want to check:
 
@@ -39,7 +45,7 @@ chmod +x health-checklist.sh
 ./health-checklist.sh
 ```
 
-## Features
+## 📋 Features
 
 Table of features that the application checks:
 
@@ -97,28 +103,28 @@ Table of features that the application checks:
 | Load average | Shows the load average of the server |
 | Zabbix agent | Shows if the Zabbix agent is installed and running |
 
-## Story
+## 📖 Story
 
 I created this application because I wanted to have a simple tool that will help me to check the health of my servers. I have a few servers in my HomeLab and I wanted to have a simple tool that will help me to check the most important configurations of the servers.
 
-## Contributing
+## 🫂 Contributing
 
 If you want to contribute to this project, you can create a pull request with your changes. I will be happy to review and merge them.
 
-## Tested on
+## 🧪 Tested on
 
 - Debian 12
 - Raspbian 12
 - Ubuntu 22.04
 
-## Disclaimer
+## 📒 Disclaimer
 
 This application is not intended to be used in production environments. It is a simple script that shows and checks some basic configurations of a linux server.
 
 This application ist not auditing tool. Only checks the most important configurations of the server.
 
-Use it at your own risk.
+Use it at your own risk. I am not responsible for any damage caused by this application.
 
-## License
+## 📒 License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
