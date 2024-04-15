@@ -53,7 +53,7 @@ msg_error() {
 #enabled flags
 #-h, --help
 #-d, --dry-run
-DRY_RUN=null
+DRY_RUN=false
 
 while [ "$#" -gt 0 ]; do
     case "$1" in
@@ -163,7 +163,7 @@ start_routines() {
     msg_ok "DNS servers: $DNS_SERVERS"
 
     
-    if [ -z "$DRY_RUN" ]; then
+    if [ "$DRY_RUN" == false ]; then
 
     section_header "Package management"
 
@@ -214,7 +214,7 @@ start_routines() {
             msg_ok "Pro installed"
         else
             msg_error "Pro not installed"
-            if [ -z "$DRY_RUN" ]; then
+           if [ "$DRY_RUN" == false ]; then
                 #offer to install Ubuntu Pro
                 read -p "Do you want to install Ubuntu Pro? (y/n): " -r
                 if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -230,7 +230,7 @@ start_routines() {
         msg_ok "Unattended Upgrades enabled"
     else
         msg_error "Unattended Upgrades not enabled"
-        if [ -z "$DRY_RUN" ]; then
+       if [ "$DRY_RUN" == false ]; then
             #offer to enable Unattended Upgrades
             read -p "Do you want to enable Unattended Upgrades? (y/n): " -r
             if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -248,7 +248,7 @@ start_routines() {
             msg_ok "UFW enabled"
         else
             msg_error "UFW not enabled"
-            if [ -z "$DRY_RUN" ]; then
+           if [ "$DRY_RUN" == false ]; then
                 #offer to enable UFW
                 read -p "Do you want to enable UFW? (y/n): " -r
                 if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -258,7 +258,7 @@ start_routines() {
         fi
     else
         msg_error "UFW not installed"
-        if [ -z "$DRY_RUN" ]; then
+       if [ "$DRY_RUN" == false ]; then
             #offer to install UFW
             read -p "Do you want to install UFW? (y/n): " -r
             if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -275,7 +275,7 @@ start_routines() {
             msg_ok "Fail2Ban enabled"
         else
             msg_error "Fail2Ban not enabled"
-            if [ -z "$DRY_RUN" ]; then
+           if [ "$DRY_RUN" == false ]; then
                 #offer to enable Fail2Ban
                 read -p "Do you want to enable Fail2Ban? (y/n): " -r
                 if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -286,7 +286,7 @@ start_routines() {
         fi
     else
         msg_error "Fail2Ban not installed"
-        if [ -z "$DRY_RUN" ]; then
+       if [ "$DRY_RUN" == false ]; then
             #offer to install Fail2Ban
             read -p "Do you want to install Fail2Ban? (y/n): " -r
             if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -310,7 +310,7 @@ start_routines() {
             msg_ok "Root login disabled"
         else
             msg_error "Root login enabled"
-            if [ -z "$DRY_RUN" ]; then
+           if [ "$DRY_RUN" == false ]; then
                 #offer to disable root login
                 read -p "Do you want to disable root login? (y/n): " -r
                 if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -333,7 +333,7 @@ start_routines() {
             msg_ok "Empty passwords disabled"
         else
             msg_error "Empty passwords enabled"
-            if [ -z "$DRY_RUN" ]; then
+           if [ "$DRY_RUN" == false ]; then
                 #offer to disable empty passwords
                 read -p "Do you want to disable empty passwords? (y/n): " -r
                 if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -358,7 +358,7 @@ start_routines() {
             msg_ok "Password authentication disabled"
         else
             msg_error "Password authentication enabled"
-            if [ -z "$DRY_RUN" ]; then
+           if [ "$DRY_RUN" == false ]; then
                 #offer to disable password authentication
                 read -p "Do you want to disable password authentication? (y/n): " -r
                 if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -379,7 +379,7 @@ start_routines() {
         msg_ok "SSH NOPASSWD disabled"
     else
         msg_error "SSH NOPASSWD enabled"
-        if [ -z "$DRY_RUN" ]; then
+       if [ "$DRY_RUN" == false ]; then
             #offer to disable SSH NOPASSWD
             read -p "Do you want to disable SSH NOPASSWD? (y/n): " -r
             if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -410,7 +410,7 @@ start_routines() {
             msg_ok "Zabbix Agent enabled"
         else
             msg_error "Zabbix Agent not enabled"
-            if [ -z "$DRY_RUN" ]; then
+           if [ "$DRY_RUN" == false ]; then
                 #offer to enable Zabbix Agent
                 read -p "Do you want to enable Zabbix Agent? (y/n): " -r
                 if [[ $REPLY =~ ^[Yy]$ ]]; then
