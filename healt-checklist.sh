@@ -160,7 +160,7 @@ start_routines() {
     read -p "Do you want check security updates ? (y/n): " -r
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         msg_info "Checking security updates"
-        apt update
+        apt update 2>/dev/null
         SECURITY_UPDATES=$(apt list --upgradable 2>/dev/null | grep -i security | wc -l || true)
         if [ "$SECURITY_UPDATES" -gt 1 ]; then
             msg_error "Security updates available"
