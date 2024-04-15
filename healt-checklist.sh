@@ -70,6 +70,11 @@ start_routines() {
         msg_error "OS version not found"
     fi
 
+    #show kernel version
+    msg_info "Checking kernel version"
+    KERNEL_VERSION=$(uname -r)
+    msg_ok "Kernel: $KERNEL_VERSION"
+
     #show timezone
     msg_info "Checking timezone"
     TIMEZONE=$(timedatectl | awk '/Time zone/{print $3}' || true)

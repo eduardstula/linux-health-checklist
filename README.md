@@ -48,6 +48,7 @@ Table of features that the application checks:
 | Feature | Description |
 | --- | --- |
 | Os version | Shows the version of the operating system |
+| Kernel version | Shows the version of the kernel |
 | Timezone | Shows the timezone of the server |
 | CPU platform | Shows the platform of the CPU |
 | CPU cores | Shows the number of CPU cores |
