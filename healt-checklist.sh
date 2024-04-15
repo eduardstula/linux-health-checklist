@@ -156,6 +156,24 @@ start_routines() {
         fi
     fi
 
+    #show if the system has security updates
+    read -p "Do you want check security updates ? (y/n): " -r
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        msg_info "Checking security updates"
+        apt update
+        SECURITY_UPDATES=$(apt list --upgradable 2>/dev/null | grep -i security | wc -l)
+        if [ "$SECURITY_UPDATES" -gt 1 ]; then
+            msg_error "Security updates available"
+            #offer to install security updates
+            read -p "Do you want to install security updates? (y/n): " -r
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                apt upgrade -y
+            fi
+        else
+            msg_ok "No security updates available"
+        fi
+    fi
+
     section_header "Security"
 
     #if distro is ubuntu, check if "pro" is installed

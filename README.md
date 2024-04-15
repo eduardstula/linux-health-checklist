@@ -71,6 +71,7 @@ Table of features that the application checks:
 | Feature | Description |
 | --- | --- |
 | Update packages | Shows if there are any updates available |
+| Security updates | Shows if there are any security updates available |
 
 ### Security
 
