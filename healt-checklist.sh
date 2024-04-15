@@ -142,7 +142,7 @@ start_routines() {
     read -p "Do you want check system updates ? (y/n): " -r
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         msg_info "Checking system updates"
-        apt update
+        apt update 2>/dev/null || true
         UPDATES=$(apt list --upgradable 2>/dev/null | wc -l)
         if [ "$UPDATES" -gt 1 ]; then
             msg_error "System updates available"
