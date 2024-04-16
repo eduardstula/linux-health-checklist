@@ -69,57 +69,57 @@ Table of features that the application checks:
 
 ### System informations
 
-| Feature | Description |
-| --- | --- |
-| Os version | Shows the version of the operating system |
-| Kernel version | Shows the version of the kernel |
-| Timezone | Shows the timezone of the server |
-| CPU platform | Shows the platform of the CPU |
-| CPU cores | Shows the number of CPU cores |
-| Total memory | Shows the total memory of the server |
-| Free memory | Shows the free memory of the server |
-| Total disk space | Shows the total disk space of the server |
-| Free disk space | Shows the free disk space of the server |
+| Feature | Type | Description |
+| --- | --- | --- |
+| Os version | Show | Shows the version of the operating system |
+| Kernel version | Show | Shows the version of the kernel |
+| Timezone | Show | Shows the timezone of the server |
+| CPU platform | Show | Shows the platform of the CPU |
+| CPU cores | Show | Shows the number of CPU cores |
+| Total memory | Show | Shows the total memory of the server |
+| Free memory | Show | Shows the free memory of the server |
+| Total disk space | Show | Shows the total disk space of the server |
+| Free disk space | Show | Shows the free disk space of the server |
 
 
 ### Network informations
 
-| Feature | Description |
-| --- | --- |
-| Hostname | Shows the hostname of the server |
-| Local IP | Shows the local IP address of the server |
-| Internet connection | Shows if the server has an internet connection |
-| DNS server | Shows the DNS server of the server |
+| Feature | Type | Description |
+| --- | --- | --- |
+| Hostname | Show | Shows the hostname of the server |
+| Local IP | Show | Shows the local IP address of the server |
+| Internet | Check | Check if the server has an internet connection |
+| DNS server | Show | Shows the DNS server of the server |
 
 ### Package management
 
-| Feature | Description |
-| --- | --- |
-| Update packages | Shows if there are any updates available |
-| Security updates | Shows if there are any security updates available |
+| Feature | Type | Description |
+| --- | --- | --- |
+| Update packages | Check | Check if there are any updates available |
+| Security updates | Check | Check if there are any security updates available |
 
 ### Security
 
-| Feature | Description |
-| --- | --- |
-| Ubuntu Pro | Shows if the server is using Ubuntu Pro if the server is running Ubuntu |
-| Unnatended upgrades | Shows if the unattended-upgrades package is installed |
-| Firewall | Shows if the UFW firewall is enabled |
-| Fail2ban | Shows if the Fail2ban is installed and enabled |
-| SSH port | Shows the SSH port of the server |
-| SSH root login | Shows if the root login is enabled in SSH |
-| SSH password authentication | Shows if the password authentication is enabled in SSH |
-| Empty password | Shows if there are any users with an empty password |
-| SSH keys | Shows if there are any SSH keys in the authorized_keys file |
-| SSH nopasswd | Shows if there are any users with the NOPASSWD option in the sudoers file |
+| Feature | Type | Description |
+| --- | --- | --- |
+| Ubuntu Pro | Check | Check if the server is using Ubuntu Pro if the server is running Ubuntu |
+| Unnatended upgrades | Check | Check if the unattended-upgrades package is installed |
+| Firewall | Check | Check if the UFW firewall is enabled |
+| Fail2ban | Check | Check if the Fail2ban is installed and enabled |
+| SSH port | Check | Check the SSH port of the server |
+| SSH root login | Check | Check if the root login is enabled in SSH |
+| SSH password authentication | Check | Check if the password authentication is enabled in SSH |
+| Empty password | Check | Check if there are any users with an empty password |
+| SSH keys | Check | Check if there are any SSH keys in the authorized_keys file |
+| SSH nopasswd | Check | Check if there are any users with the NOPASSWD option in the sudoers file |
 
 ### Monitoring
 
-| Feature | Description |
-| --- | --- |
-| Uptime | Shows the uptime of the server |
-| Load average | Shows the load average of the server |
-| Zabbix agent | Shows if the Zabbix agent is installed and running |
+| Feature | Type | Description |
+| --- | --- | --- |
+| Uptime | Show | Shows the uptime of the server |
+| Load average | Show | Shows the load average of the server |
+| Zabbix agent | Check | Check if the Zabbix agent is installed and running |
 
 ## 📖 Story
 
