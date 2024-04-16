@@ -1,5 +1,11 @@
 # Linux Health Checklist ✔️
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub issues](https://img.shields.io/github/issues/eduardstula/linux-health-checklist)]()
+[![GitHub stars](https://img.shields.io/github/stars/eduardstula/linux-health-checklist)]()
+[![GitHub forks](https://img.shields.io/github/forks/eduardstula/linux-health-checklist)]()
+[![GitHub watchers](https://img.shields.io/github/watchers/eduardstula/linux-health-checklist)]()
+
 Application that checks the health of a debian based linux servers.
 
 The best way how to keep your server healthy is to check it regularly. This application will help you to check the most important configurations of your server. Keep your server up to date and secure.
