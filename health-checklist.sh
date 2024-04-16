@@ -33,7 +33,7 @@ section_header() {
   echo -e "\n${YW}${msg}${CL}"
 }
 
-msg_info() {
+msg_running() {
   local msg="$1"
   echo -ne " ${HOLD} ${YW}${msg}..."
 }
@@ -47,6 +47,11 @@ msg_error() {
   local msg="$1"
   ERRORS=$((ERRORS + 1))
   echo -e "${BFR} ${CROSS} ${RD}${msg}${CL}"
+}
+
+msg_info() {
+  local msg="$1"
+  echo -e "${BFR} ${GN}${msg}${CL}"
 }
 
 #flags with default values and help
@@ -88,80 +93,79 @@ start_routines() {
     fi
 
     #show os version
-    msg_info "Checking OS version"
+    msg_running "Checking OS version"
     if [ -f /etc/os-release ]; then
         . /etc/os-release
-        msg_ok "OS: $PRETTY_NAME"
+        msg_info "OS: $PRETTY_NAME"
     else
         msg_error "OS version not found"
     fi
 
     #show kernel version
-    msg_info "Checking kernel version"
+    msg_running "Checking kernel version"
     KERNEL_VERSION=$(uname -r)
-    msg_ok "Kernel: $KERNEL_VERSION"
+    msg_info "Kernel: $KERNEL_VERSION"
 
     #show timezone
-    msg_info "Checking timezone"
+    msg_running "Checking timezone"
     TIMEZONE=$(timedatectl | awk '/Time zone/{print $3}' || true)
-    msg_ok "Timezone: $TIMEZONE"
+    msg_info "Timezone: $TIMEZONE"
 
     #show CPU platform
-    msg_info "Checking CPU platform"
+    msg_running "Checking CPU platform"
     CPU_PLATFORM=$(uname -m)
-    msg_ok "CPU: $CPU_PLATFORM"
+    msg_info "CPU: $CPU_PLATFORM"
 
     #show CPU cores
-    msg_info "Checking CPU cores"
+    msg_running "Checking CPU cores"
     CPU_CORES=$(nproc)
-    msg_ok "Cores: $CPU_CORES"
+    msg_info "Cores: $CPU_CORES"
 
     #show total memory
-    msg_info "Checking total memory"
+    msg_running "Checking total memory"
     TOTAL_MEMORY=$(free -m | awk '/^Mem:/{print $2}')
-    msg_ok "Total memory: $TOTAL_MEMORY MB"
+    msg_info "Total memory: $TOTAL_MEMORY MB"
 
     #show free memory
-    msg_info "Checking free memory"
+    msg_running "Checking free memory"
     FREE_MEMORY=$(free -m | awk '/^Mem:/{print $4}')
-    msg_ok "Free memory:  $FREE_MEMORY MB"
+    msg_info "Free memory:  $FREE_MEMORY MB"
 
     #show total disk space
-    msg_info "Checking total disk space"
+    msg_running "Checking total disk space"
     TOTAL_DISK=$(df -h --total / | awk '/total/{print $2}')
-    msg_ok "Total disk size: $TOTAL_DISK"
+    msg_info "Total disk size: $TOTAL_DISK"
 
     #show free disk space
-    msg_info "Checking free disk space"
+    msg_running "Checking free disk space"
     FREE_DISK=$(df -h --total / | awk '/total/{print $4}')
-    msg_ok "Free disk size:  $FREE_DISK"
+    msg_info "Free disk size:  $FREE_DISK"
 
     
     section_header "Network informations"
 
     #show hostname
-    msg_info "Checking hostname"
+    msg_running "Checking hostname"
     HOSTNAME=$(hostname)
-    msg_ok "Hostname: $HOSTNAME"
+    msg_info "Hostname: $HOSTNAME"
 
     #show ip address
-    msg_info "Checking IP address"
+    msg_running "Checking IP address"
     IP_ADDRESS=$(hostname -I)
-    msg_ok "IP address: $IP_ADDRESS"
+    msg_info "IP address: $IP_ADDRESS"
+
+    #show DNS servers
+    msg_running "Checking DNS servers"
+    DNS_SERVERS=$(cat /etc/resolv.conf | awk '/nameserver/{print $2}')
+    msg_info "DNS servers: $DNS_SERVERS"
 
     #check internet connection
-    msg_info "Checking internet connection"
+    msg_running "Checking internet connection"
     if ping -q -c 1 -W 1 google.com > /dev/null; then
         msg_ok "Internet connection: OK"
     else
         msg_error "Internet connection: FAIL"
     fi
-
-    #show DNS servers
-    msg_info "Checking DNS servers"
-    DNS_SERVERS=$(cat /etc/resolv.conf | awk '/nameserver/{print $2}')
-    msg_ok "DNS servers: $DNS_SERVERS"
-
     
     if [ "$DRY_RUN" == false ]; then
 
@@ -171,7 +175,7 @@ start_routines() {
         #run only if DRY_RUN is not enabled
         read -p "Do you want check system updates ? (y/n): " -r
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            msg_info "Checking system updates"
+            msg_running "Checking system updates"
             apt update 2>/dev/null || true
             UPDATES=$(apt list --upgradable 2>/dev/null | wc -l)
             if [ "$UPDATES" -gt 1 ]; then
@@ -189,7 +193,7 @@ start_routines() {
         #show if the system has security updates
         read -p "Do you want check security updates ? (y/n): " -r
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            msg_info "Checking security updates"
+            msg_running "Checking security updates"
             apt update 2>/dev/null || true
             SECURITY_UPDATES=$(apt list --upgradable 2>/dev/null | grep -i security | wc -l || true)
             if [ "$SECURITY_UPDATES" -gt 1 ]; then
@@ -208,7 +212,7 @@ start_routines() {
     section_header "Security"
 
     #if distro is ubuntu, check if "pro" is installed
-    msg_info "Checking Ubuntu Pro"
+    msg_running "Checking Ubuntu Pro"
     if [ "$ID" == "ubuntu" ]; then
         if [ -f /usr/bin/pro ]; then
             msg_ok "Pro installed"
@@ -225,7 +229,7 @@ start_routines() {
     fi
 
     #check if Unattended Upgrades is enabled
-    msg_info "Checking Unattended Upgrades"
+    msg_running "Checking Unattended Upgrades"
     if [ -f /etc/apt/apt.conf.d/20auto-upgrades ]; then
         msg_ok "Unattended Upgrades enabled"
     else
@@ -241,7 +245,7 @@ start_routines() {
     fi
 
     #check if UFW is installed and enabled and show status
-    msg_info "Checking UFW"
+    msg_running "Checking UFW"
     if [ -f /etc/ufw/ufw.conf ]; then
         UFW_STATUS=$(ufw status | awk '/Status:/{print $2}' || true)
         if [ "$UFW_STATUS" == "active" ]; then
@@ -268,7 +272,7 @@ start_routines() {
     fi
 
     #check if fail2ban is installed and enabled and show status
-    msg_info "Checking Fail2Ban"
+    msg_running "Checking Fail2Ban"
     if [ -f /etc/fail2ban/fail2ban.conf ]; then
         FAIL2BAN_STATUS=$(systemctl is-enabled fail2ban)
         if [ "$FAIL2BAN_STATUS" == "enabled" ]; then
@@ -296,15 +300,15 @@ start_routines() {
     fi
 
     #show SSH port
-    msg_info "Checking SSH port"
+    msg_running "Checking SSH port"
     SSH_PORT=$(ss -tlnp | grep sshd | awk '{print $4}' | cut -d: -f2) || true
-    msg_ok "SSH Port: $SSH_PORT"
+    msg_info "SSH Port: $SSH_PORT"
 
     # am i root?
-    msg_info "Checking root"
+    msg_running "Checking root"
     if [ "$USER" != "root" ]; then
         #show if root login is disabled in sshd_config and line is uncommented
-        msg_info "Checking root login"
+        msg_running "Checking root login"
         ROOT_LOGIN=$(grep PermitRootLogin /etc/ssh/sshd_config | grep -v "#" | awk '{print $2}') || true
         if [ "$ROOT_LOGIN" == "no" ]; then
             msg_ok "Root login disabled"
@@ -323,7 +327,7 @@ start_routines() {
 
 
     #show if PermitEmptyPasswords is disabled in sshd_config and line is uncommented
-    msg_info "Checking empty passwords"
+    msg_running "Checking empty passwords"
     EMPTY_PASSWORDS=$(grep PermitEmptyPasswords /etc/ssh/sshd_config | grep -v "#" | awk '{print $2}') || true
     
     if [ -z "$EMPTY_PASSWORDS" ]; then
@@ -346,13 +350,13 @@ start_routines() {
     fi
 
     #was used ssh-copy-id to copy the public key to the server?
-    msg_info "Checking SSH key"
+    msg_running "Checking SSH key"
     SSH_KEY=$(ls -la ~/.ssh/authorized_keys | awk '{print $3}') || true
     if [ "$SSH_KEY" == "root" ]; then
         msg_ok "SSH key copied"
         
         #show if password authentication is disabled in sshd_config and line is uncommented
-        msg_info "Checking password authentication"
+        msg_running "Checking password authentication"
         PASSWORD_AUTH=$(grep PasswordAuthentication /etc/ssh/sshd_config | grep -v "#" | awk '{print $2}') || true
         if [ "$PASSWORD_AUTH" == "no" ]; then
             msg_ok "Password authentication disabled"
@@ -373,7 +377,7 @@ start_routines() {
 
 
     #check SSH NOPASSWD is enabled  in sshd_config and line is uncommented
-    msg_info "Checking SSH NOPASSWD"
+    msg_running "Checking SSH NOPASSWD"
     SSH_NOPASSWD=$(grep PermitEmptyPasswords /etc/ssh/sshd_config | grep -v "#" | awk '{print $2}') || true
     if [ "$SSH_NOPASSWD" == "no" ]; then
         msg_ok "SSH NOPASSWD disabled"
@@ -393,17 +397,17 @@ start_routines() {
     section_header "Monitoring"    
 
     # uptime
-    msg_info "Checking uptime"
+    msg_running "Checking uptime"
     UPTIME=$(uptime -p)
-    msg_ok "Uptime: $UPTIME"
+    msg_info "Uptime: $UPTIME"
 
     #load average
-    msg_info "Checking load average"
+    msg_running "Checking load average"
     LOAD_AVERAGE=$(uptime | awk -F'average:' '{print $2}' | awk '{print $1, $2, $3}')
-    msg_ok "Load average: $LOAD_AVERAGE"
+    msg_info "Load average: $LOAD_AVERAGE"
 
     #check if Zabbix Agent is installed and enabled and show status
-    msg_info "Checking Zabbix Agent"
+    msg_running "Checking Zabbix Agent"
     if [ -f /etc/zabbix/zabbix_agentd.conf ]; then
         ZABBIX_AGENT_STATUS=$(systemctl is-enabled zabbix-agent)
         if [ "$ZABBIX_AGENT_STATUS" == "enabled" ]; then
