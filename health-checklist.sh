@@ -165,10 +165,10 @@ start_routines() {
     
     if [ "$DRY_RUN" == false ]; then
 
-    section_header "Package management"
+        section_header "Package management"
 
-    #show if the system is up to date
-    #run only if DRY_RUN is not enabled
+        #show if the system is up to date
+        #run only if DRY_RUN is not enabled
         read -p "Do you want check system updates ? (y/n): " -r
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             msg_info "Checking system updates"

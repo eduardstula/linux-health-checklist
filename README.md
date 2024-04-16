@@ -34,7 +34,7 @@ The simplest way to use this application is to run the following command in the 
 If you want to run the application in dry-run mode, you can use the following command. The application only show current status of the server. It doesn't ask you for any improvements and doesn't change any configurations.
 
 ```bash
-bash -c "$(wget -qLO - https://raw.githubusercontent.com/eduardstula/linux-health-checklist/master/health-checklist.sh)" --dry-run
+bash -c "$(wget -qLO - https://raw.githubusercontent.com/eduardstula/linux-health-checklist/master/health-checklist.sh)" -- --dry-run
 ```
 
 ### Check and improve
