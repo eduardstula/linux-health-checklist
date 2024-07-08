@@ -352,7 +352,9 @@ start_routines() {
     #was used ssh-copy-id to copy the public key to the server?
     msg_running "Checking SSH key"
     SSH_KEY=$(ls -la ~/.ssh/authorized_keys | awk '{print $3}') || true
-    if [ "$SSH_KEY" == "root" ]; then
+    USER=$(whoami)
+    
+    if [ "$SSH_KEY" == $USER ]; then
         msg_ok "SSH key copied"
         
         #show if password authentication is disabled in sshd_config and line is uncommented
